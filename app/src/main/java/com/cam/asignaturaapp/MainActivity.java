@@ -17,6 +17,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.cam.asignaturaapp.objetos.Asignatura;
+import com.cam.asignaturaapp.objetos.Horario;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,6 +56,75 @@ public class MainActivity extends AppCompatActivity {
                 adapter.notifyDataSetChanged();
             }
         });
+        adapter.setOnEditItemClick(new Adapter.onEditItemClick() {
+            @Override
+            public void onEdit(final int pos, final Asignatura asignatura) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                builder.setTitle("Asignatura");
+                final View view = LayoutInflater.from(MainActivity.this).inflate(R.layout.dialog_form_asignatura,
+                        null, false);
+                final EditText etNombre = view.findViewById(R.id.etNombre);
+                final EditText etCredito = view.findViewById(R.id.etCredito);
+                etNombre.setText(asignatura.getNombre());
+                etCredito.setText(String.valueOf(asignatura.getCreditos()));
+                builder.setView(view);
+                builder.setNegativeButton("Cancelar",null);
+                builder.setPositiveButton("Guardar", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        //Asignatura asignatura = new Asignatura();
+                        asignatura.setNombre(etNombre.getText().toString());
+                        asignatura.setCreditos(Integer.valueOf(etCredito.getText().toString()));
+                        try {
+                            dbClase.asignaturaDao().actualizar(asignatura);
+                            asignaturaList.get(pos).setNombre(asignatura.getNombre());
+                            asignaturaList.get(pos).setCreditos(asignatura.getCreditos());
+                            //asignaturaList.add(asignatura);
+                            adapter.notifyDataSetChanged();
+                            Toast.makeText(MainActivity.this, "Guardado!", Toast.LENGTH_SHORT).show();
+                        }
+                        catch (SQLiteConstraintException e)
+                        {
+                            Toast.makeText(MainActivity.this, "Error", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+                AlertDialog dialog = builder.create();
+                dialog.show();
+            }
+        });
+
+        adapter.setOnHorarioItemClick(new Adapter.onHorarioItemClick() {
+            @Override
+            public void onHorario(int pos, final Asignatura asignatura) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                builder.setTitle("Horario");
+               final EditText etDia= new EditText(MainActivity.this);
+               builder.setView(etDia);
+                builder.setNegativeButton("cancelar",null);
+                builder.setPositiveButton("guardar", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Horario horario= new Horario();
+                        horario.setDia(etDia.getText().toString());
+                        horario.setId_asignatura(asignatura.getId());
+                        try {
+                            dbClase.horarioDao().insertar(horario);
+                            Toast.makeText(MainActivity.this, "guardado!"
+                                    , Toast.LENGTH_SHORT).show();
+                        }
+                        catch (SQLiteConstraintException e)
+                        {
+                            Toast.makeText(MainActivity.this, "Error" + e.getMessage()
+                                    , Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+                AlertDialog dialog = builder.create();
+                dialog.show();
+            }
+        });
         recyclerView.setAdapter(adapter);
     }
 
@@ -82,7 +152,8 @@ public class MainActivity extends AppCompatActivity {
                 asignatura.setNombre(etNombre.getText().toString());
                 asignatura.setCreditos(Integer.valueOf(etCredito.getText().toString()));
                 try {
-                    dbClase.asignaturaDao().insertar(asignatura);
+                    Long id=dbClase.asignaturaDao().insertar(asignatura);
+                    asignatura.setId(id.intValue());
                     asignaturaList.add(asignatura);
                     adapter.notifyDataSetChanged();
                     Toast.makeText(MainActivity.this, "Guardado!", Toast.LENGTH_SHORT).show();

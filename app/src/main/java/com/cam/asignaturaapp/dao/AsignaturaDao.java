@@ -14,7 +14,7 @@ import java.util.List;
 public interface AsignaturaDao {
 
     @Insert
-    void insertar(Asignatura asignatura);
+    Long insertar(Asignatura asignatura);
 
     @Delete
     void borrar(Asignatura asignatura);

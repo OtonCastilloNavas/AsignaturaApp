@@ -26,6 +26,26 @@ public class Adapter extends RecyclerView.Adapter<Adapter.AsignaturaHolder> {
         this.onDeleteItemClick = onDeleteItemClick;
     }
 
+    private onEditItemClick onEditItemClick;
+    public interface  onEditItemClick
+    {
+        void onEdit(int pos, Asignatura asignatura);
+    }
+
+    public void setOnEditItemClick(Adapter.onEditItemClick onEditItemClick) {
+        this.onEditItemClick = onEditItemClick;
+    }
+
+    private onHorarioItemClick onHorarioItemClick;
+    public interface onHorarioItemClick
+    {
+        void onHorario(int pos, Asignatura asignatura);
+    }
+
+    public void setOnHorarioItemClick(Adapter.onHorarioItemClick onHorarioItemClick) {
+        this.onHorarioItemClick = onHorarioItemClick;
+    }
+
     public Adapter(List<Asignatura> asignaturaList) {
         this.asignaturaList = asignaturaList;
     }
@@ -55,6 +75,8 @@ public class Adapter extends RecyclerView.Adapter<Adapter.AsignaturaHolder> {
         TextView tvNombre;
         TextView tvCredito;
         Button btBorrar;
+        Button btEditar;
+        Button btHorario;
         public AsignaturaHolder(@NonNull View itemView) {
             super(itemView);
             tvNombre=itemView.findViewById(R.id.tvNombre);
@@ -64,6 +86,24 @@ public class Adapter extends RecyclerView.Adapter<Adapter.AsignaturaHolder> {
                 @Override
                 public void onClick(View v) {
                     onDeleteItemClick.onDelete(getAdapterPosition(),
+                            asignaturaList.get(getAdapterPosition()));
+                }
+            });
+
+            btEditar= itemView.findViewById(R.id.btEditar);
+            btEditar.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    onEditItemClick.onEdit(getAdapterPosition(),
+                            asignaturaList.get(getAdapterPosition()));
+                }
+            });
+
+            btHorario= itemView.findViewById(R.id.btHorario);
+            btHorario.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    onHorarioItemClick.onHorario(getAdapterPosition(),
                             asignaturaList.get(getAdapterPosition()));
                 }
             });

@@ -97,7 +97,7 @@ public class MainActivity extends AppCompatActivity {
 
         adapter.setOnHorarioItemClick(new Adapter.onHorarioItemClick() {
             @Override
-            public void onHorario(int pos, final Asignatura asignatura) {
+            public void onHorario(final int pos, final Asignatura asignatura) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
                 builder.setTitle("Horario");
                final EditText etDia= new EditText(MainActivity.this);
@@ -111,6 +111,8 @@ public class MainActivity extends AppCompatActivity {
                         horario.setId_asignatura(asignatura.getId());
                         try {
                             dbClase.horarioDao().insertar(horario);
+                            asignaturaList.get(pos).getHorarioList().add(horario);
+                            adapter.notifyDataSetChanged();
                             Toast.makeText(MainActivity.this, "guardado!"
                                     , Toast.LENGTH_SHORT).show();
                         }

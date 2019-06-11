@@ -63,6 +63,8 @@ public class Adapter extends RecyclerView.Adapter<Adapter.AsignaturaHolder> {
         asignaturaHolder.tvNombre.setText(asignaturaList.get(i).getAsignatura().getNombre());
         asignaturaHolder.tvCredito.setText(
                 String.valueOf(asignaturaList.get(i).getAsignatura().getCreditos()));
+        asignaturaHolder.tvCantHorario.setText(
+                String.valueOf(asignaturaList.get(i).getHorarioList().size()));
     }
 
     @Override
@@ -74,6 +76,7 @@ public class Adapter extends RecyclerView.Adapter<Adapter.AsignaturaHolder> {
     {
         TextView tvNombre;
         TextView tvCredito;
+        TextView tvCantHorario;
         Button btBorrar;
         Button btEditar;
         Button btHorario;
@@ -81,6 +84,7 @@ public class Adapter extends RecyclerView.Adapter<Adapter.AsignaturaHolder> {
             super(itemView);
             tvNombre=itemView.findViewById(R.id.tvNombre);
             tvCredito=itemView.findViewById(R.id.tvCredito);
+            tvCantHorario=itemView.findViewById(R.id.tvCantHorario);
             btBorrar= itemView.findViewById(R.id.btBorrar);
             btBorrar.setOnClickListener(new View.OnClickListener() {
                 @Override

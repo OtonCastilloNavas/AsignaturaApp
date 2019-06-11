@@ -14,7 +14,7 @@ import java.util.List;
 
 public class Adapter extends RecyclerView.Adapter<Adapter.AsignaturaHolder> {
 
-    private List<Asignatura> asignaturaList;
+    private List<AsigConHorario> asignaturaList;
 
     private OnDeleteItemClick onDeleteItemClick;
     public interface OnDeleteItemClick
@@ -46,7 +46,7 @@ public class Adapter extends RecyclerView.Adapter<Adapter.AsignaturaHolder> {
         this.onHorarioItemClick = onHorarioItemClick;
     }
 
-    public Adapter(List<Asignatura> asignaturaList) {
+    public Adapter(List<AsigConHorario> asignaturaList) {
         this.asignaturaList = asignaturaList;
     }
 
@@ -60,9 +60,9 @@ public class Adapter extends RecyclerView.Adapter<Adapter.AsignaturaHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull AsignaturaHolder asignaturaHolder, int i) {
-        asignaturaHolder.tvNombre.setText(asignaturaList.get(i).getNombre());
+        asignaturaHolder.tvNombre.setText(asignaturaList.get(i).getAsignatura().getNombre());
         asignaturaHolder.tvCredito.setText(
-                String.valueOf(asignaturaList.get(i).getCreditos()));
+                String.valueOf(asignaturaList.get(i).getAsignatura().getCreditos()));
     }
 
     @Override
@@ -86,7 +86,7 @@ public class Adapter extends RecyclerView.Adapter<Adapter.AsignaturaHolder> {
                 @Override
                 public void onClick(View v) {
                     onDeleteItemClick.onDelete(getAdapterPosition(),
-                            asignaturaList.get(getAdapterPosition()));
+                            asignaturaList.get(getAdapterPosition()).getAsignatura());
                 }
             });
 
@@ -95,7 +95,7 @@ public class Adapter extends RecyclerView.Adapter<Adapter.AsignaturaHolder> {
                 @Override
                 public void onClick(View v) {
                     onEditItemClick.onEdit(getAdapterPosition(),
-                            asignaturaList.get(getAdapterPosition()));
+                            asignaturaList.get(getAdapterPosition()).getAsignatura());
                 }
             });
 
@@ -104,7 +104,7 @@ public class Adapter extends RecyclerView.Adapter<Adapter.AsignaturaHolder> {
                 @Override
                 public void onClick(View v) {
                     onHorarioItemClick.onHorario(getAdapterPosition(),
-                            asignaturaList.get(getAdapterPosition()));
+                            asignaturaList.get(getAdapterPosition()).getAsignatura());
                 }
             });
         }

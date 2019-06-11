@@ -25,7 +25,7 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
     private DBClase dbClase;
-    private List<Asignatura> asignaturaList;
+    private List<AsigConHorario> asignaturaList;
     private Adapter adapter;
 
     @Override
@@ -44,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
 
         RecyclerView recyclerView =  findViewById(R.id.rvAsignatura);
         asignaturaList = new ArrayList<>();
-        asignaturaList.addAll(dbClase.asignaturaDao().obtenerTodo());
+        asignaturaList.addAll(dbClase.asignaturaDao().obtenerConHorario());
         LinearLayoutManager manager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(manager);
         adapter = new Adapter(asignaturaList);
@@ -78,8 +78,8 @@ public class MainActivity extends AppCompatActivity {
                         asignatura.setCreditos(Integer.valueOf(etCredito.getText().toString()));
                         try {
                             dbClase.asignaturaDao().actualizar(asignatura);
-                            asignaturaList.get(pos).setNombre(asignatura.getNombre());
-                            asignaturaList.get(pos).setCreditos(asignatura.getCreditos());
+                            asignaturaList.get(pos).getAsignatura().setNombre(asignatura.getNombre());
+                            asignaturaList.get(pos).getAsignatura().setCreditos(asignatura.getCreditos());
                             //asignaturaList.add(asignatura);
                             adapter.notifyDataSetChanged();
                             Toast.makeText(MainActivity.this, "Guardado!", Toast.LENGTH_SHORT).show();
@@ -137,35 +137,43 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Asignatura");
-        final View view = LayoutInflater.from(this).inflate(R.layout.dialog_form_asignatura,
-                null, false);
-        builder.setView(view);
-        builder.setNegativeButton("Cancelar",null);
-        builder.setPositiveButton("Guardar", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                EditText etNombre = view.findViewById(R.id.etNombre);
-                EditText etCredito = view.findViewById(R.id.etCredito);
-                Asignatura asignatura = new Asignatura();
-                asignatura.setNombre(etNombre.getText().toString());
-                asignatura.setCreditos(Integer.valueOf(etCredito.getText().toString()));
-                try {
-                    Long id=dbClase.asignaturaDao().insertar(asignatura);
-                    asignatura.setId(id.intValue());
-                    asignaturaList.add(asignatura);
-                    adapter.notifyDataSetChanged();
-                    Toast.makeText(MainActivity.this, "Guardado!", Toast.LENGTH_SHORT).show();
+        if(item.getItemId()==R.id.mnAgregar) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("Asignatura");
+            final View view = LayoutInflater.from(this).inflate(R.layout.dialog_form_asignatura,
+                    null, false);
+            builder.setView(view);
+            builder.setNegativeButton("Cancelar", null);
+            builder.setPositiveButton("Guardar", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    EditText etNombre = view.findViewById(R.id.etNombre);
+                    EditText etCredito = view.findViewById(R.id.etCredito);
+                    Asignatura asignatura = new Asignatura();
+                    asignatura.setNombre(etNombre.getText().toString());
+                    asignatura.setCreditos(Integer.valueOf(etCredito.getText().toString()));
+                    try {
+                        Long id = dbClase.asignaturaDao().insertar(asignatura);
+                        asignatura.setId(id.intValue());
+                        AsigConHorario asigConHorario = new AsigConHorario();
+                        asigConHorario.setAsignatura(asignatura);
+                        asignaturaList.add(asigConHorario);
+                        adapter.notifyDataSetChanged();
+                        Toast.makeText(MainActivity.this, "Guardado!", Toast.LENGTH_SHORT).show();
+                    } catch (SQLiteConstraintException e) {
+                        Toast.makeText(MainActivity.this, "Error", Toast.LENGTH_SHORT).show();
+                    }
                 }
-                catch (SQLiteConstraintException e)
-                {
-                    Toast.makeText(MainActivity.this, "Error", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-        AlertDialog dialog = builder.create();
-        dialog.show();
+            });
+            AlertDialog dialog = builder.create();
+            dialog.show();
+        }
+        else
+        {
+            Intent intent =
+                    new Intent(MainActivity.this,HorarioActivity.class);
+            startActivity(intent);
+        }
         return super.onOptionsItemSelected(item);
     }
 }

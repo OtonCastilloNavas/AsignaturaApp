@@ -6,6 +6,7 @@ import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.Query;
 import android.arch.persistence.room.Update;
 
+import com.cam.asignaturaapp.HorarioConAsig;
 import com.cam.asignaturaapp.objetos.Horario;
 
 import java.util.List;
@@ -22,6 +23,6 @@ public interface HorarioDao {
     @Update
     void actualizar(Horario horario);
 
-    @Query("Select * from horario")
-    List<Horario> obtenerTodo();
+    @Query("Select nombre_asig,horario.* from horario inner join asignTB on asignTB.id=id_asignatura")
+    List<HorarioConAsig> obtenerTodo();
 }

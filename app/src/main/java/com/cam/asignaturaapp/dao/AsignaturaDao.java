@@ -6,6 +6,7 @@ import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.Query;
 import android.arch.persistence.room.Update;
 
+import com.cam.asignaturaapp.AsigConHorario;
 import com.cam.asignaturaapp.objetos.Asignatura;
 
 import java.util.List;
@@ -27,4 +28,7 @@ public interface AsignaturaDao {
 
     @Query("select * from asignTB where nombre_asig=:nombre")
     List<Asignatura> obtenerPorNombre(String nombre);
+
+    @Query("select * from asignTB")
+    List<AsigConHorario> obtenerConHorario();
 }

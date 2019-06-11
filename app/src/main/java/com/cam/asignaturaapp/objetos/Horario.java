@@ -1,5 +1,6 @@
 package com.cam.asignaturaapp.objetos;
 
+import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.ForeignKey;
 import android.arch.persistence.room.PrimaryKey;
@@ -10,6 +11,7 @@ import static android.arch.persistence.room.ForeignKey.RESTRICT;
 @Entity
 public class Horario {
     @PrimaryKey(autoGenerate = true)
+    @ColumnInfo(name = "horario_id")
     private int id;
 
     private String lugar;
